@@ -67,3 +67,98 @@ impl Round {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::domain::card::{Card, Rank, Suit};
+
+    fn heart(rank: Rank) -> Card {
+        Card {
+            suit: Suit::Hearts,
+            rank,
+        }
+    }
+
+    impl Round {
+        fn from_hands(player_hand: Hand, dealer_hand: Hand) -> Self {
+            Self {
+                player_hand,
+                dealer_hand,
+            }
+        }
+    }
+
+    fn hand(ranks: &[Rank]) -> Hand {
+        let mut h = Hand::new();
+        for &rank in ranks {
+            h.hit(heart(rank));
+        }
+        h
+    }
+
+    #[test]
+    fn blackjack_winnings() {
+        assert_eq!(RoundOutcome::PlayerBlackjack.winnings(10), 25);
+    }
+
+    #[test]
+    fn win_winnings() {
+        assert_eq!(RoundOutcome::PlayerWins.winnings(10), 10);
+    }
+
+    #[test]
+    fn loss_winnings() {
+        assert_eq!(RoundOutcome::DealerWins.winnings(10), -10);
+    }
+
+    #[test]
+    fn tie_winnings() {
+        assert_eq!(RoundOutcome::Tie.winnings(10), 0);
+    }
+
+    #[test]
+    fn player_wins_higher_hand() {
+        let round = Round::from_hands(
+            hand(&[Rank::Number(10), Rank::Number(9)]),
+            hand(&[Rank::Number(10), Rank::Number(7)]),
+        );
+        assert!(matches!(round.outcome(), RoundOutcome::PlayerWins));
+    }
+
+    #[test]
+    fn dealer_wins_higher_hand() {
+        let round = Round::from_hands(
+            hand(&[Rank::Number(10), Rank::Number(6)]),
+            hand(&[Rank::Number(10), Rank::Number(9)]),
+        );
+        assert!(matches!(round.outcome(), RoundOutcome::DealerWins));
+    }
+
+    #[test]
+    fn tie_equal_hands() {
+        let round = Round::from_hands(
+            hand(&[Rank::Number(10), Rank::Number(8)]),
+            hand(&[Rank::Number(10), Rank::Number(8)]),
+        );
+        assert!(matches!(round.outcome(), RoundOutcome::Tie));
+    }
+
+    #[test]
+    fn player_bust_outcome() {
+        let round = Round::from_hands(
+            hand(&[Rank::King, Rank::Queen, Rank::Number(2)]),
+            hand(&[Rank::Number(10), Rank::Number(8)]),
+        );
+        assert!(matches!(round.outcome(), RoundOutcome::PlayerBust));
+    }
+
+    #[test]
+    fn dealer_bust_outcome() {
+        let round = Round::from_hands(
+            hand(&[Rank::Number(10), Rank::Number(8)]),
+            hand(&[Rank::King, Rank::Queen, Rank::Number(5)]),
+        );
+        assert!(matches!(round.outcome(), RoundOutcome::DealerBust));
+    }
+}

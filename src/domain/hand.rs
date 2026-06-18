@@ -59,3 +59,77 @@ impl Hand {
         self.cards.len() == 2 && self.value() == 21
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::domain::card::{Card, Rank, Suit};
+
+    fn heart(rank: Rank) -> Card {
+        Card {
+            suit: Suit::Hearts,
+            rank,
+        }
+    }
+
+    #[test]
+    fn basic_value() {
+        let mut hand = Hand::new();
+        hand.hit(heart(Rank::Number(7)));
+        hand.hit(heart(Rank::Number(8)));
+        assert_eq!(hand.value(), 15);
+    }
+
+    #[test]
+    fn ace_counts_as_eleven() {
+        let mut hand = Hand::new();
+        hand.hit(heart(Rank::Ace));
+        hand.hit(heart(Rank::Number(9)));
+        assert_eq!(hand.value(), 20);
+    }
+
+    #[test]
+    fn ace_adjusts_to_avoid_bust() {
+        let mut hand = Hand::new();
+        hand.hit(heart(Rank::Ace));
+        hand.hit(heart(Rank::King));
+        hand.hit(heart(Rank::Number(5)));
+        assert_eq!(hand.value(), 16);
+    }
+
+    #[test]
+    fn multiple_aces_adjust() {
+        let mut hand = Hand::new();
+        hand.hit(heart(Rank::Ace));
+        hand.hit(heart(Rank::Ace));
+        hand.hit(heart(Rank::Number(9)));
+        assert_eq!(hand.value(), 21);
+    }
+
+    #[test]
+    fn is_bust() {
+        let mut hand = Hand::new();
+        hand.hit(heart(Rank::King));
+        hand.hit(heart(Rank::Queen));
+        hand.hit(heart(Rank::Number(2)));
+        assert!(hand.is_bust());
+    }
+
+    #[test]
+    fn blackjack_detected() {
+        let mut hand = Hand::new();
+        hand.hit(heart(Rank::Ace));
+        hand.hit(heart(Rank::King));
+        assert!(hand.is_blackjack());
+    }
+
+    #[test]
+    fn three_card_twenty_one_is_not_blackjack() {
+        let mut hand = Hand::new();
+        hand.hit(heart(Rank::Number(7)));
+        hand.hit(heart(Rank::Number(7)));
+        hand.hit(heart(Rank::Number(7)));
+        assert_eq!(hand.value(), 21);
+        assert!(!hand.is_blackjack());
+    }
+}

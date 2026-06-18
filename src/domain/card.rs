@@ -47,3 +47,32 @@ pub enum Rank {
     King,
     Ace,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn heart(rank: Rank) -> Card {
+        Card {
+            suit: Suit::Hearts,
+            rank,
+        }
+    }
+
+    #[test]
+    fn number_card_value() {
+        assert_eq!(heart(Rank::Number(7)).value(), 7);
+    }
+
+    #[test]
+    fn face_cards_value_ten() {
+        for rank in [Rank::Jack, Rank::Queen, Rank::King] {
+            assert_eq!(heart(rank).value(), 10);
+        }
+    }
+
+    #[test]
+    fn ace_value_is_eleven() {
+        assert_eq!(heart(Rank::Ace).value(), 11);
+    }
+}
