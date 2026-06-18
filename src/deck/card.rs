@@ -40,4 +40,3 @@ pub enum Rank {
     King,
     Ace,
 }
-

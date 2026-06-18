@@ -5,9 +5,15 @@ pub struct Hand {
     cards: Vec<Card>,
 }
 
+impl Default for Hand {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Hand {
     pub fn new() -> Self {
-        Self {cards: Vec::new() }
+        Self { cards: Vec::new() }
     }
 
     pub fn hit(&mut self, card: Card) {

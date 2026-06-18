@@ -49,5 +49,8 @@ fn main() {
         }
     }
 
-    println!("Game over! You started with £{} and ended with £{}", starting_funds, funds);
+    println!(
+        "Game over! You started with £{} and ended with £{}",
+        starting_funds, funds
+    );
 }
