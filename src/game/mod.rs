@@ -1,3 +1,4 @@
-pub mod dealer;
-pub mod player;
+pub mod card;
+pub mod deck;
+pub mod hand;
 pub mod round;

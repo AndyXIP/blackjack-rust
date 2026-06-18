@@ -1,4 +1,4 @@
-use crate::{Card, Rank};
+use super::card::{Card, Rank};
 
 #[derive(Debug)]
 pub struct Hand {
@@ -47,7 +47,7 @@ impl Hand {
         self.cards.first()
     }
 
-    pub fn cards(&self) -> &Vec<Card> {
+    pub fn cards(&self) -> &[Card] {
         &self.cards
     }
 

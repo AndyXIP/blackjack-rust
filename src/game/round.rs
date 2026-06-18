@@ -1,5 +1,5 @@
-use super::super::deck::Deck;
-use super::player::Hand;
+use super::deck::Deck;
+use super::hand::Hand;
 
 pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
     let mut player_hand = Hand::new();
