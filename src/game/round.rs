@@ -1,4 +1,4 @@
-use super::super::deck::deck::Deck;
+use super::super::deck::Deck;
 use super::player::Hand;
 
 pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
@@ -49,7 +49,7 @@ pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
 
     if player_hand.is_bust() {
         println!("You busted! You lose £{}", bet);
-        return -bet;
+        -bet
     } else {
         println!("Your final hand: {:?}", player_hand.value());
         println!("Dealer's hand: {:?}", dealer_hand.value());
@@ -64,16 +64,16 @@ pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
 
         if dealer_hand.is_bust() {
             println!("Dealer busted! You win £{}", bet);
-            return bet;
+            bet
         } else if player_hand.value() > dealer_hand.value() {
             println!("You win! You win £{}", bet);
-            return bet;
+            bet
         } else if player_hand.value() < dealer_hand.value() {
             println!("Dealer wins! You lose £{}", bet);
-            return -bet;
+            -bet
         } else {
             println!("It's a tie! You get your bet back.");
-            return 0;
+            0
         }
     }
 }
