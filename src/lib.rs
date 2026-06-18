@@ -1,4 +1,4 @@
-pub mod game;
-pub use game::card::{Card, Rank, Suit};
-pub use game::deck::Deck;
-pub use game::round;
+pub mod domain;
+pub mod ui;
+pub use domain::card::{Card, Rank, Suit};
+pub use domain::deck::Deck;
