@@ -5,7 +5,10 @@ pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
     let mut round = Round::new(deck);
 
     if round.player_hand.is_blackjack() {
-        println!("You got a blackjack! You win £{}", RoundOutcome::PlayerBlackjack.winnings(bet));
+        println!(
+            "You got a blackjack! You win £{}",
+            RoundOutcome::PlayerBlackjack.winnings(bet)
+        );
         return RoundOutcome::PlayerBlackjack.winnings(bet);
     }
 
@@ -18,7 +21,11 @@ pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
         println!();
         println!(
             "Dealer shows: {}",
-            round.dealer_hand.first_card().map(|c| c.display()).unwrap_or_default()
+            round
+                .dealer_hand
+                .first_card()
+                .map(|c| c.display())
+                .unwrap_or_default()
         );
         println!("Hit or stand? (h/s)");
 
@@ -27,7 +34,10 @@ pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
 
         if choice.trim().to_lowercase() == "h" {
             round.player_hit(deck);
-            println!("You drew: {}", round.player_hand.cards().last().unwrap().display());
+            println!(
+                "You drew: {}",
+                round.player_hand.cards().last().unwrap().display()
+            );
         } else {
             break;
         }

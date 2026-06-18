@@ -34,7 +34,10 @@ impl Round {
         dealer_hand.hit(deck.deal().unwrap());
         player_hand.hit(deck.deal().unwrap());
         dealer_hand.hit(deck.deal().unwrap());
-        Self { player_hand, dealer_hand }
+        Self {
+            player_hand,
+            dealer_hand,
+        }
     }
 
     pub fn player_hit(&mut self, deck: &mut Deck) {
