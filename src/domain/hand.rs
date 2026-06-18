@@ -66,7 +66,10 @@ mod tests {
     use crate::domain::card::{Card, Rank, Suit};
 
     fn heart(rank: Rank) -> Card {
-        Card { suit: Suit::Hearts, rank }
+        Card {
+            suit: Suit::Hearts,
+            rank,
+        }
     }
 
     #[test]

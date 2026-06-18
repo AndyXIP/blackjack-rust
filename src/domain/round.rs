@@ -74,12 +74,18 @@ mod tests {
     use crate::domain::card::{Card, Rank, Suit};
 
     fn heart(rank: Rank) -> Card {
-        Card { suit: Suit::Hearts, rank }
+        Card {
+            suit: Suit::Hearts,
+            rank,
+        }
     }
 
     impl Round {
         fn from_hands(player_hand: Hand, dealer_hand: Hand) -> Self {
-            Self { player_hand, dealer_hand }
+            Self {
+                player_hand,
+                dealer_hand,
+            }
         }
     }
 

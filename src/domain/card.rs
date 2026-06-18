@@ -53,7 +53,10 @@ mod tests {
     use super::*;
 
     fn heart(rank: Rank) -> Card {
-        Card { suit: Suit::Hearts, rank }
+        Card {
+            suit: Suit::Hearts,
+            rank,
+        }
     }
 
     #[test]
