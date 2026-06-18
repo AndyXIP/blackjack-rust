@@ -5,6 +5,14 @@ pub struct Card {
 }
 
 impl Card {
+    pub fn value(&self) -> u8 {
+        match self.rank {
+            Rank::Number(n) => n,
+            Rank::Jack | Rank::Queen | Rank::King => 10,
+            Rank::Ace => 11,
+        }
+    }
+
     pub fn display(&self) -> String {
         let rank_str = match self.rank {
             Rank::Number(n) => n.to_string(),
@@ -13,7 +21,6 @@ impl Card {
             Rank::King => "King".to_string(),
             Rank::Ace => "Ace".to_string(),
         };
-
         let suit_str = match self.suit {
             Suit::Hearts => "♥",
             Suit::Diamonds => "♦",

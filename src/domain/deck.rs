@@ -1,6 +1,4 @@
-pub mod card;
-
-use card::{Card, Rank, Suit};
+use super::card::{Card, Rank, Suit};
 
 #[derive(Debug)]
 pub struct Deck {

@@ -1,5 +1,5 @@
 use blackjack::Deck;
-use blackjack::round::play_round;
+use blackjack::ui::console::play_round;
 use std::io;
 
 fn main() {
@@ -33,13 +33,12 @@ fn main() {
         let winnings = play_round(bet, &mut deck);
         funds += winnings;
 
-        println!("You now have £{} available.", funds);
-
         if funds <= 0 {
             println!("You have run out of money! Game over.");
             break;
         }
 
+        println!("You now have £{} available.", funds);
         println!("Do you want to play another round? (y/n)");
         let mut response = String::new();
         io::stdin().read_line(&mut response).unwrap();
