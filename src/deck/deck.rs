@@ -10,12 +10,27 @@ impl Deck {
         let mut cards = Vec::new();
         for suit in [Suit::Hearts, Suit::Diamonds, Suit::Clubs, Suit::Spades] {
             for rank in 2..=10 {
-                cards.push(Card { suit, rank: Rank::Number(rank) });
+                cards.push(Card {
+                    suit,
+                    rank: Rank::Number(rank),
+                });
             }
-            cards.push(Card { suit, rank: Rank::Jack });
-            cards.push(Card { suit, rank: Rank::Queen });
-            cards.push(Card { suit, rank: Rank::King });
-            cards.push(Card { suit, rank: Rank::Ace });
+            cards.push(Card {
+                suit,
+                rank: Rank::Jack,
+            });
+            cards.push(Card {
+                suit,
+                rank: Rank::Queen,
+            });
+            cards.push(Card {
+                suit,
+                rank: Rank::King,
+            });
+            cards.push(Card {
+                suit,
+                rank: Rank::Ace,
+            });
         }
         Deck { cards }
     }

@@ -7,7 +7,7 @@ pub struct Hand {
 
 impl Hand {
     pub fn new() -> Self {
-        Self {cards: Vec::new() }
+        Self { cards: Vec::new() }
     }
 
     pub fn hit(&mut self, card: Card) {
