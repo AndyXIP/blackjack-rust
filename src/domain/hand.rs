@@ -20,6 +20,10 @@ impl Hand {
         self.cards.push(card);
     }
 
+    pub fn split_off(&mut self) -> Card {
+        self.cards.pop().expect("cannot split empty hand")
+    }
+
     pub fn value(&self) -> u8 {
         let mut total = 0;
         let mut aces = 0;
@@ -41,6 +45,23 @@ impl Hand {
         }
 
         total
+    }
+
+    pub fn is_soft_seventeen(&self) -> bool {
+        if self.value() != 17 {
+            return false;
+        }
+        let hard_total: u8 = self
+            .cards
+            .iter()
+            .map(|c| match c.rank {
+                Rank::Number(n) => n,
+                Rank::Jack | Rank::Queen | Rank::King => 10,
+                Rank::Ace => 1,
+            })
+            .sum();
+        let has_ace = self.cards.iter().any(|c| matches!(c.rank, Rank::Ace));
+        has_ace && hard_total + 10 == 17
     }
 
     pub fn first_card(&self) -> Option<&Card> {
@@ -131,5 +152,21 @@ mod tests {
         hand.hit(heart(Rank::Number(7)));
         assert_eq!(hand.value(), 21);
         assert!(!hand.is_blackjack());
+    }
+
+    #[test]
+    fn soft_seventeen_detected() {
+        let mut hand = Hand::new();
+        hand.hit(heart(Rank::Ace));
+        hand.hit(heart(Rank::Number(6)));
+        assert!(hand.is_soft_seventeen());
+    }
+
+    #[test]
+    fn hard_seventeen_not_soft() {
+        let mut hand = Hand::new();
+        hand.hit(heart(Rank::Number(10)));
+        hand.hit(heart(Rank::Number(7)));
+        assert!(!hand.is_soft_seventeen());
     }
 }
