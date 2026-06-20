@@ -31,6 +31,8 @@ pub fn play_round(bet: i32, funds: i32, deck: &mut Deck) -> i32 {
     }
 
     // Player turn — loops through each hand (more than one if split)
+    // committed tracks bets placed on all hands (initial + any splits/doubles)
+    let mut committed = bet;
     while round.current_hand_index() < round.hand_count() {
         loop {
             let hand_label = if round.hand_count() > 1 {
@@ -58,8 +60,8 @@ pub fn play_round(bet: i32, funds: i32, deck: &mut Deck) -> i32 {
                     .unwrap_or_default()
             );
 
-            let can_split = round.can_split();
-            let can_double = round.can_double() && funds >= bet * 2;
+            let can_split = round.can_split() && funds >= committed + bet;
+            let can_double = round.can_double() && funds >= committed + bet;
             let prompt = match (can_split, can_double) {
                 (true, true) => "Hit, stand, double, or split? (h/s/d/p)",
                 (false, true) => "Hit, stand, or double? (h/s/d)",
@@ -88,6 +90,7 @@ pub fn play_round(bet: i32, funds: i32, deck: &mut Deck) -> i32 {
                         println!("Deck is empty!");
                         break;
                     }
+                    committed += bet;
                     println!(
                         "Doubled! Drew: {} — hand is now {}",
                         round.current_hand().cards().last().unwrap().display(),
@@ -100,6 +103,7 @@ pub fn play_round(bet: i32, funds: i32, deck: &mut Deck) -> i32 {
                         println!("Deck is empty!");
                         break;
                     }
+                    committed += bet;
                     println!("Split! Playing each hand in turn.");
                 }
                 _ => println!("Invalid choice."),
