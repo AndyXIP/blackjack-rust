@@ -1,7 +1,7 @@
 use crate::domain::deck::Deck;
 use crate::domain::round::{Round, RoundOutcome};
 
-pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
+pub fn play_round(bet: i32, funds: i32, deck: &mut Deck) -> i32 {
     let mut round = match Round::new(deck) {
         Some(r) => r,
         None => {
@@ -59,7 +59,7 @@ pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
             );
 
             let can_split = round.can_split();
-            let can_double = round.can_double();
+            let can_double = round.can_double() && funds >= bet * 2;
             let prompt = match (can_split, can_double) {
                 (true, true) => "Hit, stand, double, or split? (h/s/d/p)",
                 (false, true) => "Hit, stand, or double? (h/s/d)",
