@@ -30,7 +30,7 @@ fn main() {
         let mut deck = Deck::new();
         deck.shuffle();
 
-        let winnings = play_round(bet, &mut deck);
+        let winnings = play_round(bet, funds, &mut deck);
         funds += winnings;
 
         if funds <= 0 {

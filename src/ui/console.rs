@@ -1,7 +1,11 @@
 use crate::domain::deck::Deck;
 use crate::domain::round::{Round, RoundOutcome};
 
-pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
+fn can_afford_extra_bet(funds: i32, committed: i32, bet: i32) -> bool {
+    funds >= committed + bet
+}
+
+pub fn play_round(bet: i32, funds: i32, deck: &mut Deck) -> i32 {
     let mut round = match Round::new(deck) {
         Some(r) => r,
         None => {
@@ -31,6 +35,8 @@ pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
     }
 
     // Player turn — loops through each hand (more than one if split)
+    // committed tracks bets placed on all hands (initial + any splits/doubles)
+    let mut committed = bet;
     while round.current_hand_index() < round.hand_count() {
         loop {
             let hand_label = if round.hand_count() > 1 {
@@ -58,8 +64,8 @@ pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
                     .unwrap_or_default()
             );
 
-            let can_split = round.can_split();
-            let can_double = round.can_double();
+            let can_split = round.can_split() && can_afford_extra_bet(funds, committed, bet);
+            let can_double = round.can_double() && can_afford_extra_bet(funds, committed, bet);
             let prompt = match (can_split, can_double) {
                 (true, true) => "Hit, stand, double, or split? (h/s/d/p)",
                 (false, true) => "Hit, stand, or double? (h/s/d)",
@@ -88,6 +94,7 @@ pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
                         println!("Deck is empty!");
                         break;
                     }
+                    committed += bet;
                     println!(
                         "Doubled! Drew: {} — hand is now {}",
                         round.current_hand().cards().last().unwrap().display(),
@@ -100,6 +107,7 @@ pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
                         println!("Deck is empty!");
                         break;
                     }
+                    committed += bet;
                     println!("Split! Playing each hand in turn.");
                 }
                 _ => println!("Invalid choice."),
@@ -158,4 +166,30 @@ pub fn play_round(bet: i32, deck: &mut Deck) -> i32 {
     }
 
     round.total_winnings(bet)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn cannot_afford_extra_bet_when_underfunded() {
+        assert!(!can_afford_extra_bet(10, 6, 5)); // needs 11, has 10
+    }
+
+    #[test]
+    fn can_afford_extra_bet_with_exact_funds() {
+        assert!(can_afford_extra_bet(11, 6, 5)); // needs 11, has 11
+    }
+
+    #[test]
+    fn can_afford_extra_bet_with_surplus_funds() {
+        assert!(can_afford_extra_bet(20, 6, 5));
+    }
+
+    #[test]
+    fn cannot_double_after_split_exhausts_funds() {
+        // After splitting: committed = 2*bet, funds = 2*bet — not enough for a third bet
+        assert!(!can_afford_extra_bet(12, 12, 6));
+    }
 }
